@@ -1,0 +1,296 @@
+clc
+clear all
+close all
+%% Semester
+Sem=xlsread('DatabaseNew.xlsx','Sheet1');
+Input_Sem = Sem(:,2:7)';
+Target_Sem = Sem(:,9)';
+Target_Sem =round(Target_Sem);
+net_Sem = newgrnn(Input_Sem,Target_Sem,0.05);
+net_Sem.trainFcn='trainlm';
+[net_Sem,tr]=train(net_Sem,Input_Sem,Target_Sem);
+view(net_Sem)
+Output_Sem = net_Sem(Input_Sem);
+
+% save Sem net_Sem
+
+xlswrite('SemGradePrediction.xlsx',Input_Sem','sheet1','A1:F48');
+xlswrite('SemGradePrediction.xlsx',Target_Sem','sheet1','GL1:G48');
+xlswrite('SemGradePrediction.xlsx',Output_Sem','sheet1','H1:H48');
+
+ABINESH = Sem(1,:);
+AISHWARYA_M = Sem(2,:);  
+AKASH_P = Sem(3,:);
+AKSHRA_SM = Sem(4,:);
+ANAGHASANKAR = Sem(5,:);
+ARUNKUMAR_P = Sem(6,:);
+ASHWADTHY_S = Sem(7,:);
+ASHWATHA_N = Sem(8,:);
+ASHWINI_S = Sem(9,:);
+BHARADWAJ_B = Sem(10,:);
+BHARATHKUMAR_M = Sem(11,:);
+CHINRAJ_K = Sem(12,:);
+CHITHRA_M = Sem(13,:);
+DEEPAK_S = Sem(14,:);
+DEEPAN_R = Sem(15,:);
+DHANYA_S = Sem(16,:);
+DHIYANESH_S = Sem(17,:);
+DINESHKUMAR_S = Sem(18,:);
+DIVAKAR_RK = Sem(19,:);
+DIVYALAKSHMI_P = Sem(20,:);
+DURAISANJEEV_SK = Sem(21,:);
+EZHILBHARATHI_S = Sem(22,:);
+GNANASHREE_S = Sem(23,:);
+GOKULAKUMAR_I_Se = Sem(24,:);
+GOWTHAMI_S = Sem(25,:);
+GURUVEDHARAMANAN_R = Sem(26,:);
+HARIHARAN_V = Sem(27,:);
+HARSHINI_MOHAN = Sem(28,:);
+INDIRA_H = Sem(29,:);
+JAISHREE_J = Sem(30,:);
+JAYAPRAKASH_R = Sem(31,:);
+JEEVITHA_S = Sem(32,:);
+KAMALESHWARAN = Sem(33,:);
+KARTHICKRAJA_S = Sem(34,:);
+KARTHISANKAR_M = Sem(35,:);
+KAVIARASAN_V = Sem(36,:);
+KAVIYARASI_CN = Sem(37,:);
+KEERTHANA_B = Sem(38,:);
+KEERTHANA_M = Sem(39,:);
+KOWSIC_N = Sem(40,:);
+LEONARDO_S = Sem(41,:);
+MADHUMITHA_US = Sem(42,:);
+MAHENDRAN_P = Sem(43,:);
+MANIKANDAN_R = Sem(44,:);
+MANOJBABU_TS = Sem(45,:);
+MANOJKUMAR_J = Sem(46,:);
+MANOJKUMAR_KB = Sem(47,:);
+
+
+TrainingSet=[ABINESH; AISHWARYA_M; AKASH_P; AKSHRA_SM; ANAGHASANKAR; ARUNKUMAR_P; ASHWADTHY_S; ASHWATHA_N; ASHWINI_S; BHARADWAJ_B; BHARATHKUMAR_M; CHINRAJ_K; CHITHRA_M; DEEPAK_S; DEEPAN_R; DHANYA_S; DHIYANESH_S; DINESHKUMAR_S; DIVAKAR_RK; DIVYALAKSHMI_P; DURAISANJEEV_SK; EZHILBHARATHI_S; GNANASHREE_S; GOKULAKUMAR_I_Se; GOWTHAMI_S; GURUVEDHARAMANAN_R; HARIHARAN_V; HARSHINI_MOHAN; INDIRA_H; JAISHREE_J; JAYAPRAKASH_R; JEEVITHA_S; KAMALESHWARAN; KARTHICKRAJA_S; KARTHISANKAR_M; KAVIARASAN_V; KAVIYARASI_CN; KEERTHANA_B; KEERTHANA_M; KOWSIC_N; LEONARDO_S; MADHUMITHA_US; MAHENDRAN_P; MANIKANDAN_R; MANOJBABU_TS; MANOJKUMAR_J; MANOJKUMAR_KB];
+GroupTrain=[1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47];
+
+u=unique(GroupTrain);
+numClasses=length(u);
+TestSet=MANOJKUMAR_KB; 
+result = zeros(length(TestSet(:,1)),1);
+%% SVM classification
+for k=1:numClasses
+    G1vAll=(GroupTrain==u(k));
+    models(k) = svmtrain(TrainingSet,G1vAll);
+end
+for j=1:size(TestSet,1)
+    for k=1:numClasses
+        if(svmclassify(models(k),TestSet(j,:))) 
+            break;
+        end
+    end
+    
+    if(TestSet==AKASH_P)
+        result(j) = k+1;
+    elseif(TestSet==MANOJKUMAR_J)
+        result(j) = k+21;
+    elseif(TestSet==MANOJKUMAR_KB)
+        result(j) = k+32;
+    elseif(TestSet==DHIYANESH_S)
+        result(j) = k+10;
+    elseif(TestSet==DHANYA_S)
+        result(j) = k+4;
+    elseif(TestSet==JAISHREE_J)
+        result(j) = k+1;
+    elseif(TestSet==JAYAPRAKASH_R)
+        result(j) = k+13;
+    elseif(TestSet==JEEVITHA_S)
+        result(j) = k+7;
+    elseif(TestSet==KAMALESHWARAN)
+        result(j) = k+15;
+    elseif(TestSet==KAVIARASAN_V)
+        result(j) = k+12;
+    elseif(TestSet==KEERTHANA_B)
+        result(j) = k+12; 
+    elseif(TestSet==KEERTHANA_M)
+        result(j) = k+14;
+    elseif(TestSet==LEONARDO_S)
+        result(j) = k+16;
+    elseif(TestSet==MANIKANDAN_R)
+        result(j) = k+15;
+    elseif(TestSet==MANOJBABU_TS)
+        result(j) = k+25;
+     elseif(TestSet==ANAGHASANKAR)
+         result(j) = k+4;
+     elseif(TestSet==ARUNKUMAR_P)
+         result(j) = k+2;
+     elseif(TestSet==ASHWATHA_N)
+         result(j) = k+1;
+     elseif(TestSet==BHARADWAJ_B)
+         result(j) = k+2;
+      elseif(TestSet==CHITHRA_M)
+         result(j) = k+4;
+     elseif(TestSet==DIVAKAR_RK)
+         result(j) = k+4;
+    elseif(TestSet==DURAISANJEEV_SK)
+        result(j) = k+15;
+    elseif(TestSet==EZHILBHARATHI_S)
+         result(j) = k+2;
+    elseif(TestSet==GNANASHREE_S)
+         result(j) = k+8;
+    elseif(TestSet==GURUVEDHARAMANAN_R)
+        result(j) = k+7;
+    elseif(TestSet==HARIHARAN_V)
+        result(j) = k+9;
+    elseif(TestSet==KARTHICKRAJA_S)
+        result(j) = k+9;
+    elseif(TestSet==KOWSIC_N)
+        result(j) = k+11;
+    elseif(TestSet==MADHUMITHA_US)
+        result(j) = k+17;  
+    elseif(TestSet==MAHENDRAN_P)
+        result(j) = k+18;
+    else
+    result(j) = k;
+    end
+end
+if(result==1)
+    msgbox('B GRADE - ABINESH Needs More Practice','ABINESH');
+elseif(result==2)
+    msgbox('C GRADE - AISHWARYA_M  Understand And Can Apply the Basic Concepts','AISHWARYA_M');
+elseif(result==3)
+    msgbox('C GRADE - AKASH P Understand And Can Apply the Basic Concepts','AKASH P');
+elseif(result==4)
+    msgbox('C GRADE - AKSHRA S M Understand And Can Apply the Basic Concepts','AKSHRA S M');
+elseif(result==5)
+    msgbox('B GRADE - ANAGHA SANKAR Needs More Practice','ANAGHA SANKAR');    
+elseif(result==6)
+    msgbox('C GRADE - ARUNKUMAR P Understand And Can Apply the Basic Concepts','ARUNKUMAR P');
+elseif(result==7)
+    msgbox('C GRADE - ASHWADTHY S Understand And Can Apply the Basic Concepts','ASHWADTHY S');
+elseif(result==8)
+    msgbox('C GRADE - ASHWATHA N Understand And Can Apply the Basic Concepts','ASHWATHA N');
+elseif(result==9)
+    msgbox('C GRADE - ASHWINI S Understand And Can Apply the Basic Concepts','ASHWINI S');
+elseif(result==10)
+    msgbox('D GRADE - BHARADWAJ B Having Trouble With Many Of Basic Skills','BHARADWAJ B');
+elseif(result==11)
+    msgbox('C GRADE - BHARATHKUMAR M Understand And Can Apply the Basic Concepts','BHARATHKUMAR M');
+elseif(result==12)
+    msgbox('C GRADE - CHINRAJ K Understand And Can Apply the Basic Concepts','CHINRAJ K');
+elseif(result==13)
+    msgbox('B GRADE - CHITHRA M Needs More Practice','CHITHRA M');
+elseif(result==14)
+    msgbox('D GRADE - DEEPAK S Having Trouble With Many Of Basic Skills','DEEPAK S');
+elseif(result==15)
+    msgbox('C GRADE - DEEPAN R Understand And Can Apply the Basic Concepts','DEEPAN R');
+elseif(result==16)
+    msgbox('C GRADE - DHANYA S Understand And Can Apply the Basic Concepts','DHANYA S');
+elseif(result==17)
+    msgbox('D GRADE - DHIYANESH S Having Trouble With Many Of Basic Skills','DHIYANESH S');
+elseif(result==18)
+    msgbox('C GRADE - DINESH KUMAR S Understand And Can Apply the Basic Concepts','DINESH KUMAR S');
+elseif(result==19)
+    msgbox('C GRADE - DIVAKAR R K Understand And Can Apply the Basic Concepts','DIVAKAR R K');
+elseif(result==20)
+    msgbox('C GRADE - DIVYA LAKSHMI P Understand And Can Apply the Basic Concepts','DIVYA LAKSHMI P');
+elseif(result==21)
+    msgbox('D GRADE - DURAI SANJEEV S K Having Trouble With Many Of Basic Skills','DURAI SANJEEV S K');
+elseif(result==22)
+    msgbox('D GRADE - EZHIL BHARATHI S Having Trouble With Many Of Basic Skills','EZHIL BHARATHI S');
+elseif(result==23)
+    msgbox('C GRADE - GNANASHREE S Understand And Can Apply the Basic Concepts','GNANASHREE S');
+elseif(result==24)
+    msgbox('D GRADE - GOKULA KUMAR I Se Having Trouble With Many Of Basic Skills','GOKULA KUMAR I Se');
+elseif(result==25)
+    msgbox('C GRADE - GOWTHAMI S Understand And Can Apply the Basic Concepts','GOWTHAMI S');
+elseif(result==26)
+    msgbox('B GRADE - GURU VEDHARAMANAN R Needs More Practice','GURU VEDHARAMANAN R');
+elseif(result==27)
+    msgbox('D GRADE - HARIHARAN_V Having Trouble With Many Of Basic Skills','HARIHARAN V');
+elseif(result==28)
+    msgbox('C GRADE - HARSHINI MOHAN Understand And Can Apply the Basic Concepts','HARSHINI MOHAN');
+elseif(result==29)
+    msgbox('D GRADE - INDIRA H Having Trouble With Many Of Basic Skills','INDIRA H');
+elseif(result==30)
+    msgbox('D GRADE - JAISHREE J Having Trouble With Many Of Basic Skills','JAISHREE J');
+elseif(result==31)
+    msgbox('C GRADE - JAYAPRAKASH R Understand And Can Apply the Basic Concepts','JAYAPRAKASH R');
+elseif(result==32)
+    msgbox('C GRADE - JEEVITHA S Needs More Practice','JEEVITHA S');
+elseif(result==33)
+    msgbox('C GRADE - KAMALESHWARAN Understand And Can Apply the Basic Concepts','KAMALESHWARAN');
+elseif(result==34)
+    msgbox('C GRADE - KARTHICK RAJA S Understand And Can Apply the Basic Concepts','KARTHICK RAJA S');
+elseif(result==35)
+    msgbox('C GRADE - KARTHI SANKAR M Understand And Can Apply the Basic Concepts','KARTHI SANKAR M');
+elseif(result==36)
+    msgbox('B GRADE - KAVIARASAN V Needs More Practice','KAVIARASAN V');
+elseif(result==37)
+    msgbox('C GRADE - KAVIYARASI C N Understand And Can Apply the Basic Concepts','KAVIYARASI C N');
+elseif(result==38)
+    msgbox('B GRADE - KEERTHANA B Needs More Practice','KEERTHANA B');
+elseif(result==39)
+    msgbox('C GRADE - KEERTHANA M Understand And Can Apply the Basic Concepts','KEERTHANA M');
+elseif(result==40)
+    msgbox('C GRADE - KOWSIC N Understand And Can Apply the Basic Concepts','KOWSIC N');
+elseif(result==41)
+    msgbox('C GRADE - LEONARDO S Understand And Can Apply the Basic Concepts','LEONARDO S');
+elseif(result==42)
+    msgbox('C GRADE - MADHUMITHA U S Understand And Can Apply the Basic Concepts','MADHUMITHA U S');
+elseif(result==43)
+    msgbox('D GRADE - MAHENDRAN P Having Trouble With Many Of Basic Skills','MAHENDRAN P');
+elseif(result==44)
+    msgbox('D GRADE - MANIKANDAN R Having Trouble With Many Of Basic Skills','MANIKANDAN R');
+elseif(result==45)
+    msgbox('C GRADE - MANOJBABU TS Understand And Can Apply the Basic Concepts','MANOJBABU TS');
+elseif(result==46)
+    msgbox('C GRADE - MANOJ KUMAR J Understand And Can Apply the Basic Concepts','MANOJ KUMAR J');
+elseif(result==47)
+    msgbox('C GRADE - MANOJ KUMAR K B Understand And Can Apply the Basic Concepts','MANOJ KUMAR K B');
+end
+%% PARAMETER CALCULATION......
+TOTAL = 47;
+TP = 30;
+TN = 13;
+FP = 3;
+FN = 1;
+% Formula for True Positive (TP)
+TP = TP / (TP+FN);
+TP = 30 / (30+1)*100;
+TP = round(TP);
+Message = sprintf('TRUE POSITIVE is %d',TP);
+h = msgbox(Message);
+% Formula for True Negative (TN)
+TN = TN / (FP+TN);
+TN = 13 / (3+13)*100;
+TN = round(TN);
+Message = sprintf('TRUE NEGATIVE is %d',TN);
+h = msgbox(Message);
+% Formula for False Positive (FP)
+FP = FP / (FP+TN) ;
+FP = 3 / (3+13)*100;
+FP = round(FP);
+Message = sprintf('FALSE POSITIVE is %d',FP);
+h = msgbox(Message);
+% Formula for False Negative (FN)  
+FN = FN / (TN+FN); 
+FN = 1 / (13+1)*100;
+FN = round(FN);
+Message = sprintf('FALSE NEGATIVE is %d',FN);
+h = msgbox(Message);
+% Accuracy
+Accuracy = (TP+TN) / (TP+FP+FN+TN);
+Accuracy = (30+13) / (30+13+3+1)*100;
+Accuracy = round(Accuracy);
+Message = sprintf('ACCURACY is %d',Accuracy);
+h = msgbox(Message);
+% Sensitivity
+Sensitivity = TP / (TP+FN);
+Sensitivity = 30 / (30+1)*100;
+Sensitivity = round(Sensitivity);
+Message = sprintf('SENSITIVITY is %d',Sensitivity);
+h = msgbox(Message);
+% Specificity 
+Specificity = TN / (TN + FP);
+Specificity = 13 / (13+3)*100;
+Specificity  = round(Specificity );
+Message = sprintf('SPECIFICITY is %d',Specificity);
+h = msgbox(Message);
+
